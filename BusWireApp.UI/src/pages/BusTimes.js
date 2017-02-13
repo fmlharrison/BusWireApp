@@ -5,12 +5,9 @@ class BusTimes extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      currentDate: new Date(),
       busTimes: [],
     };
-  }
-
-  componentWillMount() {
-    this.fetchBusData();
   }
 
   fetchBusData() {
@@ -24,6 +21,32 @@ class BusTimes extends React.Component {
           }
         }
       );
+  }
+
+  componentWillMount() {
+    this.fetchBusData();
+  }
+
+  componentDidMount() {
+    this.timeID = setInterval(
+      () => this.arrivalCountdown(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timeID);
+  }
+
+  arrivalCountdown() {
+    this.setState({
+      currentDate: new Date()
+    });
+  }
+
+  timeTillArrival(arrivalTime, currentTime) {
+    var timeDifference = new Date(arrivalTime) - currentTime;
+    return Math.floor(timeDifference/1000);
   }
 
   sortBusTimes(times) {
@@ -52,7 +75,7 @@ class BusTimes extends React.Component {
               <tr>
                 <td>{bus.lineName}</td>
                 <td>{bus.destinationName}</td>
-                <td>{bus.timeToStation} s</td>
+                <td>{this.timeTillArrival(bus.expectedArrival, this.state.currentDate) <= 15 ? "Due" : this.timeTillArrival(bus.expectedArrival, this.state.currentDate) + " s"}</td>
               </tr>
             </tbody>
           )
@@ -66,7 +89,7 @@ class BusTimes extends React.Component {
 
     return (
       <div>
-        <button onClick={this.fetchBusData.bind(this)}>Where's My Bus?</button>
+        <button onClick={this.fetchBusData.bind(this)}>Update Arrival Times</button>
         {this.renderArrivingBuses()}
       </div>
     );

@@ -9507,7 +9507,7 @@ var App = function (_React$Component) {
         _react2.default.createElement(
           'h2',
           null,
-          'Click the button to find out when your next bus is'
+          'Click the button to update the bus stops\'s time table.'
         ),
         _react2.default.createElement(_BusTimes2.default, null)
       );
@@ -9567,17 +9567,13 @@ var BusTimes = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (BusTimes.__proto__ || Object.getPrototypeOf(BusTimes)).call(this, props));
 
     _this.state = {
+      currentDate: new Date(),
       busTimes: []
     };
     return _this;
   }
 
   _createClass(BusTimes, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      this.fetchBusData();
-    }
-  }, {
     key: 'fetchBusData',
     value: function fetchBusData() {
       var _this2 = this;
@@ -9590,6 +9586,38 @@ var BusTimes = function (_React$Component) {
           console.log('This was an error fetching the data', error);
         }
       });
+    }
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.fetchBusData();
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      this.timeID = setInterval(function () {
+        return _this3.arrivalCountdown();
+      }, 1000);
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      clearInterval(this.timeID);
+    }
+  }, {
+    key: 'arrivalCountdown',
+    value: function arrivalCountdown() {
+      this.setState({
+        currentDate: new Date()
+      });
+    }
+  }, {
+    key: 'timeTillArrival',
+    value: function timeTillArrival(arrivalTime, currentTime) {
+      var timeDifference = new Date(arrivalTime) - currentTime;
+      return Math.floor(timeDifference / 1000);
     }
   }, {
     key: 'sortBusTimes',
@@ -9606,6 +9634,8 @@ var BusTimes = function (_React$Component) {
   }, {
     key: 'renderArrivingBuses',
     value: function renderArrivingBuses() {
+      var _this4 = this;
+
       return _react2.default.createElement(
         'table',
         null,
@@ -9652,8 +9682,7 @@ var BusTimes = function (_React$Component) {
               _react2.default.createElement(
                 'td',
                 null,
-                bus.timeToStation,
-                ' s'
+                _this4.timeTillArrival(bus.expectedArrival, _this4.state.currentDate) <= 15 ? "Due" : _this4.timeTillArrival(bus.expectedArrival, _this4.state.currentDate) + " s"
               )
             )
           );
@@ -9671,7 +9700,7 @@ var BusTimes = function (_React$Component) {
         _react2.default.createElement(
           'button',
           { onClick: this.fetchBusData.bind(this) },
-          'Where\'s My Bus?'
+          'Update Arrival Times'
         ),
         this.renderArrivingBuses()
       );

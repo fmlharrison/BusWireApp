@@ -7,7 +7,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>BusWire - When is your next bus</h1>
-        <h2>Click the button to find out when your next bus is</h2>
+        <h2>Click the button to update the bus stops's time table.</h2>
         <BusTimes />
       </div>
     );
