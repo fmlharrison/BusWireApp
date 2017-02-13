@@ -10861,7 +10861,11 @@ var StopDetails = function (_React$Component) {
   }, {
     key: 'setIsShown',
     value: function setIsShown() {
-      this.setState({ isShown: true });
+      this.setState(function (prevState) {
+        return {
+          isShown: !prevState.isShown
+        };
+      });
     }
   }, {
     key: 'render',
