@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import ajax from 'superagent';
 import BusTimes from './BusTimes';
+import StopDetails from './StopDetails';
 
 const app_id = '1f750915';
 const app_key = '272753ef1cbdfffca975fbbc1178b8ff';
@@ -36,7 +37,12 @@ class StopList extends React.Component {
         {this.state.busStops.map((stop, index) => {
           return (
             <li key={index}>
-              {stop.commonName}
+              <h4>{stop.commonName}</h4>
+              <StopDetails 
+                distance={stop.distance}
+                lines={stop.lines}
+                directionHeaded={stop.additionalProperties[1].value}
+              />
               <BusTimes stopId={stop.id} />
             </li>
           )

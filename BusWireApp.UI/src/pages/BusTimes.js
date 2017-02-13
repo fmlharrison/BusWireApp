@@ -63,45 +63,49 @@ class BusTimes extends React.Component {
 
   renderArrivingBuses() {
     return (
-      <table>
-        <tbody>
-          <tr>
-            <th>Line</th>
-            <th>Destination</th>
-            <th>Arriving In</th>
-          </tr>
-        </tbody>
-        {this.state.busTimes.map((bus, index) => {
-          return (
-            <tbody key={index}>
-              <tr>
-                <td>{bus.lineName}</td>
-                <td>{bus.destinationName}</td>
-                <td>{this.timeTillArrival(bus.expectedArrival, this.state.currentDate) <= 15 ? "Due" : this.timeTillArrival(bus.expectedArrival, this.state.currentDate) + " s"}</td>
-              </tr>
-            </tbody>
-          )
-        })}
-      </table>
+      <div>
+        <button onClick={this.fetchBusData.bind(this)}>Update Arrival Times</button>
+        <table>
+          <tbody>
+            <tr>
+              <th>Line</th>
+              <th>Destination</th>
+              <th>Arriving In</th>
+            </tr>
+          </tbody>
+          {this.state.busTimes.map((bus, index) => {
+            return (
+              <tbody key={index}>
+                <tr>
+                  <td>{bus.lineName}</td>
+                  <td>{bus.destinationName}</td>
+                  <td>{this.timeTillArrival(bus.expectedArrival, this.state.currentDate) <= 15 ? "Due" : this.timeTillArrival(bus.expectedArrival, this.state.currentDate) + " s"}</td>
+                </tr>
+              </tbody>
+            )
+          })}
+        </table>
+      </div>
     );
   }
 
-  showComponent(isShown) {
-    if (isShown) {
-      this.renderArrivingBuses();
-    } else {
-      return null;
-    }
+  setIsShown() {
+    this.setState({ isShown: true });
   }
 
   render() {
     this.sortBusTimes(this.state.busTimes);
-    const componentIsShow = this.state.isShown;
+    const componentIsShown = this.state.isShown;
+
+    let timeTable = null;
+    if (componentIsShown) {
+      timeTable = this.renderArrivingBuses();
+    }
 
     return (
       <div>
-        <button onClick={this.fetchBusData.bind(this)}>Update Arrival Times</button>
-        {this.showComponent(componentIsShow)}
+        <button onClick={this.setIsShown.bind(this)}>Bus Timetable</button>
+        {timeTable}
       </div>
     );
   }
