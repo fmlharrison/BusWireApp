@@ -2,6 +2,7 @@
 import ﻿ajax from 'superagent';
 
 import PostCode from './PostCode';
+import StopList from './StopList';
 
 const postcodeUrl = 'https://api.postcodes.io/postcodes'
 
@@ -11,17 +12,18 @@ class App extends React.Component {
     this.state = {
       longitude: '',
       latitude: '',
+      hasCoordinates: false,
     };
   }
 
   postcodeSearch(postcode) {
-    console.log(postcode);
     ajax.get(`${postcodeUrl}/${postcode}`)
         .end((error, response) => {
           if (!error && response) {
             this.setState({
               longitude: response.body.result.longitude,
-              latitude: response.body.result.latitude
+              latitude: response.body.result.latitude,
+              hasCoordinates: true
             });
           } else {
             console.log('There was an error fetching the data', error);
@@ -30,16 +32,22 @@ class App extends React.Component {
       );
   }
 
-  save
-
   render() {
+    const hasCoordinates = this.state.hasCoordinates;
+
+    let busStopList;
+    if (hasCoordinates) {
+      busStopList = <StopList longitude={this.state.longitude} latitude={this.state.latitude} />
+    } else {
+      busStopList = <p>What's your postcode?</p>
+    }
+
     return (
       <div>
         <h1>BusWire - When is your next bus</h1>
         <h2>Enter your post code to find your closest bus stops.</h2>
-      <PostCode onSearch={this.postcodeSearch.bind(this)}/>
-        <p>{this.state.longitude}</p>
-        <p>{this.state.latitude}</p>
+        <PostCode onSearch={this.postcodeSearch.bind(this)}/>
+        {busStopList}
       </div>
     );
   }

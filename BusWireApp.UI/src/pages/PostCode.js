@@ -14,7 +14,6 @@ class PostCode extends React.Component {
 
   handleSearch(e) {
     e.preventDefault();
-    console.log(this.state.postcode);
     this.props.onSearch(this.state.postcode);
   }
 
@@ -23,7 +22,7 @@ class PostCode extends React.Component {
       <div>
         <form>
           <input type="text" placeholder="Enter Postcode" onChange={this.handleChange.bind(this)}/>
-        <button onClick={this.handleSearch.bind(this)}>Find Stops</button>
+          <button onClick={this.handleSearch.bind(this)}>Find Stops</button>
         </form>
       </div>
     )
