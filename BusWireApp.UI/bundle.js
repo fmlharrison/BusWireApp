@@ -9508,11 +9508,15 @@ var App = function (_React$Component) {
   _createClass(App, [{
     key: 'postcodeSearch',
     value: function postcodeSearch(postcode) {
+      var _this2 = this;
+
       console.log(postcode);
       _superagent2.default.get(postcodeUrl + '/' + postcode).end(function (error, response) {
         if (!error && response) {
-          console.log(response.body.result.latitude);
-          console.log(response.body.result.longitude);
+          _this2.setState({
+            longitude: response.body.result.longitude,
+            latitude: response.body.result.latitude
+          });
         } else {
           console.log('There was an error fetching the data', error);
         }
@@ -9534,7 +9538,7 @@ var App = function (_React$Component) {
           null,
           'Enter your post code to find your closest bus stops.'
         ),
-        _react2.default.createElement(_PostCode2.default, { onSearch: this.postcodeSearch }),
+        _react2.default.createElement(_PostCode2.default, { onSearch: this.postcodeSearch.bind(this) }),
         _react2.default.createElement(
           'p',
           null,

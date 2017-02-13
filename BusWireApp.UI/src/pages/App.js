@@ -7,7 +7,7 @@ const postcodeUrl = 'https://api.postcodes.io/postcodes'
 
 class App extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       longitude: '',
       latitude: '',
@@ -19,8 +19,10 @@ class App extends React.Component {
     ajax.get(`${postcodeUrl}/${postcode}`)
         .end((error, response) => {
           if (!error && response) {
-            console.log(response.body.result.latitude);
-            console.log(response.body.result.longitude);
+            this.setState({
+              longitude: response.body.result.longitude,
+              latitude: response.body.result.latitude
+            });
           } else {
             console.log('There was an error fetching the data', error);
           }
@@ -28,12 +30,14 @@ class App extends React.Component {
       );
   }
 
+  save
+
   render() {
     return (
       <div>
         <h1>BusWire - When is your next bus</h1>
         <h2>Enter your post code to find your closest bus stops.</h2>
-        <PostCode onSearch={this.postcodeSearch}/>
+      <PostCode onSearch={this.postcodeSearch.bind(this)}/>
         <p>{this.state.longitude}</p>
         <p>{this.state.latitude}</p>
       </div>
