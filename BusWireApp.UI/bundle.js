@@ -9472,9 +9472,13 @@ var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _BusTimes = __webpack_require__(83);
+var _superagent = __webpack_require__(181);
 
-var _BusTimes2 = _interopRequireDefault(_BusTimes);
+var _superagent2 = _interopRequireDefault(_superagent);
+
+var _PostCode = __webpack_require__(83);
+
+var _PostCode2 = _interopRequireDefault(_PostCode);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9484,16 +9488,37 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var postcodeUrl = 'https://api.postcodes.io/postcodes';
+
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
 
-  function App() {
+  function App(props) {
     _classCallCheck(this, App);
 
-    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+
+    _this.state = {
+      longitude: '',
+      latitude: ''
+    };
+    return _this;
   }
 
   _createClass(App, [{
+    key: 'postcodeSearch',
+    value: function postcodeSearch(postcode) {
+      console.log(postcode);
+      _superagent2.default.get(postcodeUrl + '/' + postcode).end(function (error, response) {
+        if (!error && response) {
+          console.log(response.body.result.latitude);
+          console.log(response.body.result.longitude);
+        } else {
+          console.log('There was an error fetching the data', error);
+        }
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -9507,9 +9532,19 @@ var App = function (_React$Component) {
         _react2.default.createElement(
           'h2',
           null,
-          'Click the button to update the bus stops\'s time table.'
+          'Enter your post code to find your closest bus stops.'
         ),
-        _react2.default.createElement(_BusTimes2.default, null)
+        _react2.default.createElement(_PostCode2.default, { onSearch: this.postcodeSearch }),
+        _react2.default.createElement(
+          'p',
+          null,
+          this.state.longitude
+        ),
+        _react2.default.createElement(
+          'p',
+          null,
+          this.state.latitude
+        )
       );
     }
   }]);
@@ -9546,10 +9581,6 @@ var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _superagent = __webpack_require__(181);
-
-var _superagent2 = _interopRequireDefault(_superagent);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -9558,159 +9589,56 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var BusTimes = function (_React$Component) {
-  _inherits(BusTimes, _React$Component);
+var PostCode = function (_React$Component) {
+  _inherits(PostCode, _React$Component);
 
-  function BusTimes(props) {
-    _classCallCheck(this, BusTimes);
+  function PostCode(props) {
+    _classCallCheck(this, PostCode);
 
-    var _this = _possibleConstructorReturn(this, (BusTimes.__proto__ || Object.getPrototypeOf(BusTimes)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (PostCode.__proto__ || Object.getPrototypeOf(PostCode)).call(this, props));
 
     _this.state = {
-      currentDate: new Date(),
-      busTimes: []
+      postcode: ''
     };
     return _this;
   }
 
-  _createClass(BusTimes, [{
-    key: 'fetchBusData',
-    value: function fetchBusData() {
-      var _this2 = this;
-
-      var baseURL = 'https://api.tfl.gov.uk/StopPoint/490008660N/arrivals';
-      _superagent2.default.get(baseURL).end(function (error, response) {
-        if (!error && response) {
-          _this2.saveTimes(response.body);
-        } else {
-          console.log('This was an error fetching the data', error);
-        }
-      });
+  _createClass(PostCode, [{
+    key: 'handleChange',
+    value: function handleChange(e) {
+      this.setState({ postcode: e.target.value });
     }
   }, {
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      this.fetchBusData();
-    }
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this3 = this;
-
-      this.timeID = setInterval(function () {
-        return _this3.arrivalCountdown();
-      }, 1000);
-    }
-  }, {
-    key: 'componentWillUnmount',
-    value: function componentWillUnmount() {
-      clearInterval(this.timeID);
-    }
-  }, {
-    key: 'arrivalCountdown',
-    value: function arrivalCountdown() {
-      this.setState({
-        currentDate: new Date()
-      });
-    }
-  }, {
-    key: 'timeTillArrival',
-    value: function timeTillArrival(arrivalTime, currentTime) {
-      var timeDifference = new Date(arrivalTime) - currentTime;
-      return Math.floor(timeDifference / 1000);
-    }
-  }, {
-    key: 'sortBusTimes',
-    value: function sortBusTimes(times) {
-      times.sort(function (a, b) {
-        return a.timeToStation - b.timeToStation;
-      });
-    }
-  }, {
-    key: 'saveTimes',
-    value: function saveTimes(busTimes) {
-      this.setState({ busTimes: busTimes });
-    }
-  }, {
-    key: 'renderArrivingBuses',
-    value: function renderArrivingBuses() {
-      var _this4 = this;
-
-      return _react2.default.createElement(
-        'table',
-        null,
-        _react2.default.createElement(
-          'tbody',
-          null,
-          _react2.default.createElement(
-            'tr',
-            null,
-            _react2.default.createElement(
-              'th',
-              null,
-              'Line'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'Destination'
-            ),
-            _react2.default.createElement(
-              'th',
-              null,
-              'Arriving In'
-            )
-          )
-        ),
-        this.state.busTimes.map(function (bus, index) {
-          return _react2.default.createElement(
-            'tbody',
-            { key: index },
-            _react2.default.createElement(
-              'tr',
-              null,
-              _react2.default.createElement(
-                'td',
-                null,
-                bus.lineName
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                bus.destinationName
-              ),
-              _react2.default.createElement(
-                'td',
-                null,
-                _this4.timeTillArrival(bus.expectedArrival, _this4.state.currentDate) <= 15 ? "Due" : _this4.timeTillArrival(bus.expectedArrival, _this4.state.currentDate) + " s"
-              )
-            )
-          );
-        })
-      );
+    key: 'handleSearch',
+    value: function handleSearch(e) {
+      e.preventDefault();
+      console.log(this.state.postcode);
+      this.props.onSearch(this.state.postcode);
     }
   }, {
     key: 'render',
     value: function render() {
-      this.sortBusTimes(this.state.busTimes);
-
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
-          'button',
-          { onClick: this.fetchBusData.bind(this) },
-          'Update Arrival Times'
-        ),
-        this.renderArrivingBuses()
+          'form',
+          null,
+          _react2.default.createElement('input', { type: 'text', placeholder: 'Enter Postcode', onChange: this.handleChange.bind(this) }),
+          _react2.default.createElement(
+            'button',
+            { onClick: this.handleSearch.bind(this) },
+            'Find Stops'
+          )
+        )
       );
     }
   }]);
 
-  return BusTimes;
+  return PostCode;
 }(_react2.default.Component);
 
-exports.default = BusTimes;
+exports.default = PostCode;
 
 /***/ }),
 /* 84 */

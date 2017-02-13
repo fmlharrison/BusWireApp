@@ -80,6 +80,8 @@
   <ItemGroup>
     <Content Include="src\pages\App.js" />
     <Content Include="src\pages\BusTimes.js" />
+    <Content Include="src\pages\PostCode.js" />
+    <Content Include="src\pages\StopList.js" />
     <Content Include="Web.config" />
     <Content Include="webpack.config.js" />
   </ItemGroup>
