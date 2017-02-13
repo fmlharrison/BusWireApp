@@ -5,13 +5,15 @@ class BusTimes extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      isShown: false,
+      stopId: this.props.stopId,
       currentDate: new Date(),
       busTimes: [],
     };
   }
 
   fetchBusData() {
-    const baseURL = 'https://api.tfl.gov.uk/StopPoint/490008660N/arrivals';
+    const baseURL = `https://api.tfl.gov.uk/StopPoint/${this.state.stopId}/arrivals`;
     ajax.get(baseURL)
         .end((error, response) => {
           if (!error && response) {
@@ -84,13 +86,22 @@ class BusTimes extends React.Component {
     );
   }
 
+  showComponent(isShown) {
+    if (isShown) {
+      this.renderArrivingBuses();
+    } else {
+      return null;
+    }
+  }
+
   render() {
     this.sortBusTimes(this.state.busTimes);
+    const componentIsShow = this.state.isShown;
 
     return (
       <div>
         <button onClick={this.fetchBusData.bind(this)}>Update Arrival Times</button>
-        {this.renderArrivingBuses()}
+        {this.showComponent(componentIsShow)}
       </div>
     );
   }

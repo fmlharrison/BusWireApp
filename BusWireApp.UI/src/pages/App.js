@@ -39,7 +39,7 @@ class App extends React.Component {
     if (hasCoordinates) {
       busStopList = <StopList longitude={this.state.longitude} latitude={this.state.latitude} />
     } else {
-      busStopList = <p>What's your postcode?</p>
+      busStopList = null;
     }
 
     return (
