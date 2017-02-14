@@ -3,8 +3,8 @@ import ajax from 'superagent';
 import BusTimes from './BusTimes';
 import StopDetails from './StopDetails';
 
-const app_id = '1f750915';
-const app_key = '272753ef1cbdfffca975fbbc1178b8ff';
+const app_id = API_ID;
+const app_key = API_KEY;
 
 class StopList extends React.Component {
   constructor(props) {
