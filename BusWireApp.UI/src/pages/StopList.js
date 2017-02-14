@@ -38,10 +38,9 @@ class StopList extends React.Component {
           return (
             <li key={index}>
               <h4>{stop.commonName}</h4>
-              <StopDetails 
+              <StopDetails
                 distance={stop.distance}
                 lines={stop.lines}
-                directionHeaded={stop.additionalProperties[1].value}
               />
               <BusTimes stopId={stop.id} />
             </li>

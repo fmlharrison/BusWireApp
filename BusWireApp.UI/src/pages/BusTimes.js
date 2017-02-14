@@ -90,7 +90,9 @@ class BusTimes extends React.Component {
   }
 
   setIsShown() {
-    this.setState({ isShown: true });
+    this.setState(prevState => ({
+      isShown: !prevState.isShown
+    }));
   }
 
   render() {

@@ -10675,7 +10675,11 @@ var BusTimes = function (_React$Component) {
   }, {
     key: 'setIsShown',
     value: function setIsShown() {
-      this.setState({ isShown: true });
+      this.setState(function (prevState) {
+        return {
+          isShown: !prevState.isShown
+        };
+      });
     }
   }, {
     key: 'render',
@@ -10815,26 +10819,27 @@ var StopDetails = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (StopDetails.__proto__ || Object.getPrototypeOf(StopDetails)).call(this, props));
 
     _this.state = {
-      distance: _this.props.distance,
-      lines: _this.props.lines,
-      directionHeaded: _this.props.directionHeaded,
+      distance: null,
+      lines: [],
       isShown: false
     };
     return _this;
   }
 
   _createClass(StopDetails, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.setState({
+        distance: this.props.distance,
+        lines: this.props.lines
+      });
+    }
+  }, {
     key: 'showStopDetails',
     value: function showStopDetails() {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(
-          'p',
-          null,
-          'Headed towards: ',
-          this.state.directionHeaded
-        ),
         _react2.default.createElement(
           'p',
           null,
@@ -10985,8 +10990,7 @@ var StopList = function (_React$Component) {
             ),
             _react2.default.createElement(_StopDetails2.default, {
               distance: stop.distance,
-              lines: stop.lines,
-              directionHeaded: stop.additionalProperties[1].value
+              lines: stop.lines
             }),
             _react2.default.createElement(_BusTimes2.default, { stopId: stop.id })
           );

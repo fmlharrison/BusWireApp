@@ -4,17 +4,22 @@ class StopDetails extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      distance: this.props.distance,
-      lines: this.props.lines,
-      directionHeaded: this.props.directionHeaded,
+      distance: null,
+      lines: [],
       isShown: false,
     };
+  }
+
+  componentWillMount() {
+    this.setState({
+      distance: this.props.distance,
+      lines: this.props.lines,
+    });
   }
 
   showStopDetails() {
     return(
       <div>
-        <p>Headed towards: {this.state.directionHeaded}</p>
         <p>Distance from you: {Math.floor(this.state.distance)} m</p>
         <p>Lines:
           {this.state.lines.map((line, index) => {
