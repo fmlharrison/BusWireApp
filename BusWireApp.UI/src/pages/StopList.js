@@ -14,8 +14,10 @@ class StopList extends React.Component {
     };
   }
 
-  fetchLocalStops() {
-    const baseUrl = `https://api.tfl.gov.uk/StopPoint?lat=${this.props.latitude}&lon=${this.props.longitude}&stoptypes=NaptanPublicBusCoachTram&app_id=${app_id}&app_key=${app_key}`;
+  fetchLocalStops(props) {
+    console.log("ajax called");
+    console.log(props);
+    const baseUrl = `https://api.tfl.gov.uk/StopPoint?lat=${props.latitude}&lon=${props.longitude}&stoptypes=NaptanPublicBusCoachTram&app_id=${app_id}&app_key=${app_key}`;
     ajax.get(baseUrl)
         .end((error, response) => {
           if (!error && response) {
@@ -25,10 +27,15 @@ class StopList extends React.Component {
           }
         }
       );
+      console.log("ajax finished");
   }
 
   componentWillMount() {
-    this.fetchLocalStops();
+    this.fetchLocalStops(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.fetchLocalStops(nextProps);
   }
 
   renderStopsList() {
@@ -37,7 +44,7 @@ class StopList extends React.Component {
         {this.state.busStops.map((stop, index) => {
           return (
             <li key={index}>
-              <h4>{stop.commonName}</h4>
+              <h4>{stop.commonName} - {stop.indicator}</h4>
               <StopDetails
                 distance={stop.distance}
                 lines={stop.lines}
@@ -51,6 +58,7 @@ class StopList extends React.Component {
   }
 
   render() {
+    console.log(2);
     return (
       <div>
         {this.renderStopsList()}

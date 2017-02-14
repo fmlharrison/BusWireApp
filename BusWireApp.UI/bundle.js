@@ -10431,8 +10431,7 @@ var App = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
     _this.state = {
-      longitude: '',
-      latitude: '',
+      postcodeData: {},
       hasCoordinates: false
     };
     return _this;
@@ -10446,8 +10445,7 @@ var App = function (_React$Component) {
       _superagent2.default.get(postcodeUrl + '/' + postcode).end(function (error, response) {
         if (!error && response) {
           _this2.setState({
-            longitude: response.body.result.longitude,
-            latitude: response.body.result.latitude,
+            postcodeData: response.body.result,
             hasCoordinates: true
           });
         } else {
@@ -10462,7 +10460,7 @@ var App = function (_React$Component) {
 
       var busStopList = void 0;
       if (hasCoordinates) {
-        busStopList = _react2.default.createElement(_StopList2.default, { longitude: this.state.longitude, latitude: this.state.latitude });
+        busStopList = _react2.default.createElement(_StopList2.default, { longitude: this.state.postcodeData.longitude, latitude: this.state.postcodeData.latitude });
       } else {
         busStopList = null;
       }
@@ -10956,10 +10954,12 @@ var StopList = function (_React$Component) {
 
   _createClass(StopList, [{
     key: 'fetchLocalStops',
-    value: function fetchLocalStops() {
+    value: function fetchLocalStops(props) {
       var _this2 = this;
 
-      var baseUrl = 'https://api.tfl.gov.uk/StopPoint?lat=' + this.props.latitude + '&lon=' + this.props.longitude + '&stoptypes=NaptanPublicBusCoachTram&app_id=' + app_id + '&app_key=' + app_key;
+      console.log("ajax called");
+      console.log(props);
+      var baseUrl = 'https://api.tfl.gov.uk/StopPoint?lat=' + props.latitude + '&lon=' + props.longitude + '&stoptypes=NaptanPublicBusCoachTram&app_id=' + app_id + '&app_key=' + app_key;
       _superagent2.default.get(baseUrl).end(function (error, response) {
         if (!error && response) {
           _this2.setState({ busStops: response.body.stopPoints });
@@ -10967,11 +10967,17 @@ var StopList = function (_React$Component) {
           console.log('There was an error fetching the data', error);
         }
       });
+      console.log("ajax finished");
     }
   }, {
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.fetchLocalStops();
+      this.fetchLocalStops(this.props);
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      this.fetchLocalStops(nextProps);
     }
   }, {
     key: 'renderStopsList',
@@ -10986,7 +10992,9 @@ var StopList = function (_React$Component) {
             _react2.default.createElement(
               'h4',
               null,
-              stop.commonName
+              stop.commonName,
+              ' - ',
+              stop.indicator
             ),
             _react2.default.createElement(_StopDetails2.default, {
               distance: stop.distance,
@@ -11000,6 +11008,7 @@ var StopList = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      console.log(2);
       return _react2.default.createElement(
         'div',
         null,

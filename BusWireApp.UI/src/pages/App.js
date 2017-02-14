@@ -10,8 +10,7 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      longitude: '',
-      latitude: '',
+      postcodeData: {},
       hasCoordinates: false,
     };
   }
@@ -21,8 +20,7 @@ class App extends React.Component {
         .end((error, response) => {
           if (!error && response) {
             this.setState({
-              longitude: response.body.result.longitude,
-              latitude: response.body.result.latitude,
+              postcodeData: response.body.result,
               hasCoordinates: true
             });
           } else {
@@ -37,7 +35,7 @@ class App extends React.Component {
 
     let busStopList;
     if (hasCoordinates) {
-      busStopList = <StopList longitude={this.state.longitude} latitude={this.state.latitude} />
+      busStopList = <StopList longitude={this.state.postcodeData.longitude} latitude={this.state.postcodeData.latitude} />
     } else {
       busStopList = null;
     }
